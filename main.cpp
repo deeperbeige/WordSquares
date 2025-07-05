@@ -7,10 +7,10 @@
 
 //Path to the dictionary file
 //Recommended source: https://raw.githubusercontent.com/andrewchen3019/wordle/refs/heads/main/Collins%20Scrabble%20Words%20(2019).txt
-#define DICTIONARY "../../dictionaries/scrabble_words.txt"
+#define DICTIONARY "dict/collins_scrabble_words_2019.txt"
 //Path to the word frequency file
 //Recommended source: https://www.kaggle.com/datasets/wheelercode/dictionary-word-frequency
-#define FREQ_FILTER "../../dictionaries/ngram_freq_dict.csv"
+#define FREQ_FILTER "dict/ngram_freq_dict.csv"
 //Width of the word grid
 #define SIZE_W 5
 //Height of the word grid

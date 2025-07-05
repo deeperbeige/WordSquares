@@ -1,0 +1,22 @@
+# Build results
+*.obj
+*.exe
+*.dll
+*.lib
+*.pdb
+*.ipch
+*.log
+
+# Visual Studio folders
+/.vs/
+/Debug/
+/Release/
+/x64/
+/ipch/
+/WordSquares/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
