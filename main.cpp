@@ -4,6 +4,7 @@
 #include <array>
 #include <unordered_set>
 #include <unordered_map>
+#include <string>
 
 //Path to the dictionary file
 //Recommended source: https://raw.githubusercontent.com/andrewchen3019/wordle/refs/heads/main/Collins%20Scrabble%20Words%20(2019).txt
@@ -14,9 +15,9 @@
 //Width of the word grid
 #define SIZE_W 4 // width (X)
 //Height of the word grid
-#define SIZE_H 4 // height (Y)
+#define SIZE_H 3 // height (Y)
 //Depth of the word grid
-#define SIZE_D 3 // depth (Z)
+#define SIZE_D 2 // depth (Z)
 //Filter horizontal words to be in the top-N (or 0 for all words)
 #define MIN_FREQ_W 20000
 //Filter vertical words to be in the top-N (or 0 for all words)
@@ -29,6 +30,7 @@
 static const int VTRIE_SIZE = (DIAGONALS ? SIZE_W + 2 : SIZE_W);
 static const std::unordered_set<std::string> banned = {
   //Feel free to add words you don't want to see here
+  "ANNA", "BONA", "AGAR", "BOIS"
 };
 
 //Using global variables makes the recursive calls more compact
@@ -107,7 +109,54 @@ void PrintBox(char* words) {
   std::cout << std::endl;
 }
 
+// Helper to extract a word along X axis at (y, z)
+std::string get_word_x(const char* words, int y, int z) {
+    std::string s;
+    for (int x = 0; x < SIZE_W; ++x)
+        s += words[idx(x, y, z)];
+    return s;
+}
+
+// Helper to extract a word along Y axis at (x, z)
+std::string get_word_y(const char* words, int x, int z) {
+    std::string s;
+    for (int y = 0; y < SIZE_H; ++y)
+        s += words[idx(x, y, z)];
+    return s;
+}
+
+// Helper to extract a word along Z axis at (x, y)
+std::string get_word_z(const char* words, int x, int y) {
+    std::string s;
+    for (int z = 0; z < SIZE_D; ++z)
+        s += words[idx(x, y, z)];
+    return s;
+}
+
 void PrintCube(char* words) {
+    if (UNIQUE) {
+        std::unordered_set<std::string> seen;
+        // X axis
+        for (int y = 0; y < SIZE_H; ++y)
+            for (int z = 0; z < SIZE_D; ++z) {
+                auto w = get_word_x(words, y, z);
+                if (!seen.insert(w).second) return;
+            }
+        // Y axis
+        for (int x = 0; x < SIZE_W; ++x)
+            for (int z = 0; z < SIZE_D; ++z) {
+                auto w = get_word_y(words, x, z);
+                if (!seen.insert(w).second) return;
+            }
+        // Z axis
+        for (int x = 0; x < SIZE_W; ++x)
+            for (int y = 0; y < SIZE_H; ++y) {
+                auto w = get_word_z(words, x, y);
+                if (!seen.insert(w).second) return;
+            }
+    }
+
+    // Print cube layers
     for (int z = 0; z < SIZE_D; ++z) {
         std::cout << "Layer z=" << z << ":\n";
         for (int y = 0; y < SIZE_H; ++y) {
@@ -118,6 +167,16 @@ void PrintCube(char* words) {
         }
         std::cout << std::endl;
     }
+
+    // Print Z-direction words
+    std::cout << "Z-direction words (depth, for each (x, y)):\n";
+    for (int y = 0; y < SIZE_H; ++y) {
+        for (int x = 0; x < SIZE_W; ++x) {
+            std::cout << "z-word at (x=" << x << ", y=" << y << "): ";
+            std::cout << get_word_z(words, x, y) << std::endl;
+        }
+    }
+    std::cout << std::endl;
 }
 
 void BoxSearch(Trie* trie, Trie* vtries[VTRIE_SIZE], int pos) {
