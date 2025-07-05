@@ -12,9 +12,11 @@
 //Recommended source: https://www.kaggle.com/datasets/wheelercode/dictionary-word-frequency
 #define FREQ_FILTER "dict/ngram_freq_dict.csv"
 //Width of the word grid
-#define SIZE_W 5
+#define SIZE_W 4 // width (X)
 //Height of the word grid
-#define SIZE_H 5
+#define SIZE_H 4 // height (Y)
+//Depth of the word grid
+#define SIZE_D 3 // depth (Z)
 //Filter horizontal words to be in the top-N (or 0 for all words)
 #define MIN_FREQ_W 20000
 //Filter vertical words to be in the top-N (or 0 for all words)
@@ -33,7 +35,15 @@ static const std::unordered_set<std::string> banned = {
 std::unordered_map<std::string, uint32_t> g_freqs;
 Trie g_trie_w;
 Trie g_trie_h;
-char g_words[SIZE_H * SIZE_W] = { 0 };
+Trie g_trie_x; // width
+Trie g_trie_y; // height
+Trie g_trie_z; // depth
+char g_words[SIZE_W * SIZE_H * SIZE_D] = { 0 };
+
+// Helper to index into the 3D array
+inline int idx(int x, int y, int z) {
+    return y * SIZE_W * SIZE_D + x * SIZE_D + z;
+}
 
 //Dictionary should be list of words separated by newlines
 void LoadDictionary(const char* fname, int length, Trie& trie, int min_freq) {
@@ -97,6 +107,19 @@ void PrintBox(char* words) {
   std::cout << std::endl;
 }
 
+void PrintCube(char* words) {
+    for (int z = 0; z < SIZE_D; ++z) {
+        std::cout << "Layer z=" << z << ":\n";
+        for (int y = 0; y < SIZE_H; ++y) {
+            for (int x = 0; x < SIZE_W; ++x) {
+                std::cout << words[idx(x, y, z)];
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;
+    }
+}
+
 void BoxSearch(Trie* trie, Trie* vtries[VTRIE_SIZE], int pos) {
   //Reset when coming back to first letter
   const int v_ix = pos % SIZE_W;
@@ -154,25 +177,76 @@ void BoxSearch(Trie* trie, Trie* vtries[VTRIE_SIZE], int pos) {
   }
 }
 
+void CubeSearch(
+    Trie* x_iters[SIZE_H][SIZE_D],
+    Trie* y_iters[SIZE_W][SIZE_D],
+    Trie* z_iters[SIZE_W][SIZE_H],
+    int pos
+) {
+    int total = SIZE_W * SIZE_H * SIZE_D;
+    if (pos == total) {
+        PrintCube(g_words);
+        return;
+    }
+    int x = (pos / (SIZE_D * SIZE_H)) % SIZE_W;
+    int y = (pos / SIZE_D) % SIZE_H;
+    int z = pos % SIZE_D;
+
+    Trie* x_trie = x_iters[y][z];
+    Trie* y_trie = y_iters[x][z];
+    Trie* z_trie = z_iters[x][y];
+
+    Trie::Iter iter = x_trie->iter();
+    while (iter.next()) {
+        int ix = iter.getIx();
+        char letter = iter.getLetter();
+        if (!y_trie->hasIx(ix)) continue;
+        if (!z_trie->hasIx(ix)) continue;
+
+        g_words[idx(x, y, z)] = letter;
+
+        // Backup
+        Trie* x_bak = x_iters[y][z];
+        Trie* y_bak = y_iters[x][z];
+        Trie* z_bak = z_iters[x][y];
+
+        // Advance
+        x_iters[y][z] = x_iters[y][z]->decend(ix);
+        y_iters[x][z] = y_iters[x][z]->decend(ix);
+        z_iters[x][y] = z_iters[x][y]->decend(ix);
+
+        CubeSearch(x_iters, y_iters, z_iters, pos + 1);
+
+        // Restore
+        x_iters[y][z] = x_bak;
+        y_iters[x][z] = y_bak;
+        z_iters[x][y] = z_bak;
+    }
+}
+
 int main(int argc, char* argv[]) {
-  //Load word frequency list
-  LoadFreq(FREQ_FILTER);
+    LoadFreq(FREQ_FILTER);
 
-  //Load horizontal trie from dictionary
-  LoadDictionary(DICTIONARY, SIZE_W, g_trie_w, MIN_FREQ_W);
-  Trie* trie_h = &g_trie_w;
-  if (SIZE_W != SIZE_H) {
-    //Load vertical trie from dictionary (if needed)
-    LoadDictionary(DICTIONARY, SIZE_H, g_trie_h, MIN_FREQ_H);
-    trie_h = &g_trie_h;
-  }
+    LoadDictionary(DICTIONARY, SIZE_W, g_trie_x, MIN_FREQ_W);
+    LoadDictionary(DICTIONARY, SIZE_H, g_trie_y, MIN_FREQ_H);
+    LoadDictionary(DICTIONARY, SIZE_D, g_trie_z, MIN_FREQ_H);
 
-  //Initialize all vertical tries
-  Trie* vtries[VTRIE_SIZE] = { 0 };
-  std::fill(vtries, vtries + VTRIE_SIZE, trie_h);
+    Trie* x_iters[SIZE_H][SIZE_D];
+    Trie* y_iters[SIZE_W][SIZE_D];
+    Trie* z_iters[SIZE_W][SIZE_H];
 
-  //Run the search
-  BoxSearch(nullptr, vtries, 0);
-  std::cout << "Done." << std::endl;
-  return 0;
+    for (int y = 0; y < SIZE_H; ++y)
+        for (int z = 0; z < SIZE_D; ++z)
+            x_iters[y][z] = &g_trie_x;
+    for (int x = 0; x < SIZE_W; ++x)
+        for (int z = 0; z < SIZE_D; ++z)
+            y_iters[x][z] = &g_trie_y;
+    for (int x = 0; x < SIZE_W; ++x)
+        for (int y = 0; y < SIZE_H; ++y)
+            z_iters[x][y] = &g_trie_z;
+
+    CubeSearch(x_iters, y_iters, z_iters, 0);
+
+    std::cout << "Done." << std::endl;
+    return 0;
 }
