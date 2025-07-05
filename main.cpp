@@ -11,32 +11,31 @@
 //Path to the dictionary file
 //Recommended source: https://raw.githubusercontent.com/andrewchen3019/wordle/refs/heads/main/Collins%20Scrabble%20Words%20(2019).txt
 #define DICTIONARY "dict/collins_scrabble_words_2019.txt"
+
 //Path to the word frequency file
 //Recommended source: https://www.kaggle.com/datasets/wheelercode/dictionary-word-frequency
 #define FREQ_FILTER "dict/ngram_freq_dict.csv"
-//Width of the word grid
-#define SIZE_W 4 // width (X)
-//Height of the word grid
+
+#define BANNED_WORDS "dict/banned_words.txt"
+
+//Size of the word grid
+#define SIZE_W 3 // width  (X)
 #define SIZE_H 3 // height (Y)
-//Depth of the word grid
-#define SIZE_D 2 // depth (Z)
+#define SIZE_D 3 // depth  (Z)
+
 //Filter horizontal words to be in the top-N (or 0 for all words)
 #define MIN_FREQ_W 20000
 //Filter vertical words to be in the top-N (or 0 for all words)
 #define MIN_FREQ_H 20000
+
 //Only print solutions with all unique words (only for square grids)
 #define UNIQUE true
+
 //Diagonals must also be words (only for square grids)
 #define DIAGONALS false
 
 static const int VTRIE_SIZE = (DIAGONALS ? SIZE_W + 2 : SIZE_W);
-static const std::unordered_set<std::string> banned = {
-    //Feel free to add words you don't want to see here
-	"AA", "TI", "OD", "PE", "AR", "DI",
-    "GI", "RE", "LI", "ET", "AB", "ST",
-    "AE", "KA", "TE", "AG",
-    "ANNA", "BONA", "AGAR", "BOIS", "ANAL"
-};
+std::unordered_set<std::string> banned;
 
 //Using global variables makes the recursive calls more compact
 std::unordered_map<std::string, uint32_t> g_freqs;
@@ -305,7 +304,26 @@ void CubeSearch(
     }
 }
 
-int main(int argc, char* argv[]) {
+void LoadBannedWords(const char* fname) {
+    std::ifstream fin(fname);
+    if (!fin) {
+        std::cerr << "Warning: Could not open banned words file: " << fname << std::endl;
+        return;
+    }
+    std::string line;
+    while (std::getline(fin, line)) {
+        // Remove whitespace and convert to uppercase
+        line.erase(std::remove_if(line.begin(), line.end(), ::isspace), line.end());
+        for (auto& c : line) c = toupper(c);
+        if (!line.empty())
+            banned.insert(line);
+    }
+    std::cout << "Loaded " << banned.size() << " banned words." << std::endl;
+}
+
+int main() {
+    LoadBannedWords(BANNED_WORDS);
+    
     LoadFreq(FREQ_FILTER);
 
     LoadDictionary(DICTIONARY, SIZE_W, g_trie_x, MIN_FREQ_W);
@@ -327,7 +345,4 @@ int main(int argc, char* argv[]) {
             z_iters[x][y] = &g_trie_z;
 
     CubeSearch(x_iters, y_iters, z_iters, 0);
-
-    std::cout << "Done." << std::endl;
-    return 0;
 }

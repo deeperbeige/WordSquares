@@ -1,0 +1,51 @@
+3x3x3
+
+Layer z=0:
+ERA
+GEL
+OPT
+
+Layer z=1:
+TAB
+ORE
+WEE
+
+Layer z=2:
+ADS
+TEA
+END
+
+Z-direction words (depth, for each (x, y)):
+z-word at (x=0, y=0): ETA
+z-word at (x=1, y=0): RAD
+z-word at (x=2, y=0): ABS
+z-word at (x=0, y=1): GOT
+z-word at (x=1, y=1): ERE
+z-word at (x=2, y=1): LEA
+z-word at (x=0, y=2): OWE
+z-word at (x=1, y=2): PEN
+z-word at (x=2, y=2): TED
+
+
+
+4x3x2
+
+
+
+4x3x3
+
+
+
+4x4x4
+
+
+
+5x3x2
+
+
+
+5x3x3
+
+
+
+
