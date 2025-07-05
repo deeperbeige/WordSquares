@@ -5,6 +5,8 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <string>
+#include <random>
+#include <algorithm>
 
 //Path to the dictionary file
 //Recommended source: https://raw.githubusercontent.com/andrewchen3019/wordle/refs/heads/main/Collins%20Scrabble%20Words%20(2019).txt
@@ -29,8 +31,11 @@
 
 static const int VTRIE_SIZE = (DIAGONALS ? SIZE_W + 2 : SIZE_W);
 static const std::unordered_set<std::string> banned = {
-  //Feel free to add words you don't want to see here
-  "ANNA", "BONA", "AGAR", "BOIS"
+    //Feel free to add words you don't want to see here
+	"AA", "TI", "OD", "PE", "AR", "DI",
+    "GI", "RE", "LI", "ET", "AB", "ST",
+    "AE", "KA", "TE", "AG",
+    "ANNA", "BONA", "AGAR", "BOIS", "ANAL"
 };
 
 //Using global variables makes the recursive calls more compact
@@ -177,6 +182,10 @@ void PrintCube(char* words) {
         }
     }
     std::cout << std::endl;
+
+    // Add visual separator
+    std::cout << "---------------" << std::endl;
+    std::cout << std::endl;
 }
 
 void BoxSearch(Trie* trie, Trie* vtries[VTRIE_SIZE], int pos) {
@@ -255,12 +264,25 @@ void CubeSearch(
     Trie* y_trie = y_iters[x][z];
     Trie* z_trie = z_iters[x][y];
 
-    Trie::Iter iter = x_trie->iter();
-    while (iter.next()) {
+    // Collect all possible next indices
+    std::vector<std::pair<int, char>> next_indices;
+    for (Trie::Iter iter = x_trie->iter(); iter.next(); ) {
         int ix = iter.getIx();
         char letter = iter.getLetter();
         if (!y_trie->hasIx(ix)) continue;
         if (!z_trie->hasIx(ix)) continue;
+        next_indices.emplace_back(ix, letter);
+    }
+
+    // Shuffle the order
+    static std::random_device rd;
+    static std::mt19937 g(rd());
+    std::shuffle(next_indices.begin(), next_indices.end(), g);
+
+    // Now iterate in random order
+    for (const auto& p : next_indices) {
+        int ix = p.first;
+        char letter = p.second;
 
         g_words[idx(x, y, z)] = letter;
 
