@@ -1,3 +1,4 @@
+UR
 AA
 TI
 OD
@@ -14,6 +15,9 @@ KA
 TE
 AG
 JO
+SAM
+SAR
+LES
 AMI
 ALS
 DOD

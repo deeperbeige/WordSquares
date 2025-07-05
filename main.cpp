@@ -20,7 +20,7 @@
 
 //Size of the word grid
 #define SIZE_W 3 // width  (X)
-#define SIZE_H 3 // height (Y)
+#define SIZE_H 2 // height (Y)
 #define SIZE_D 3 // depth  (Z)
 
 //Filter horizontal words to be in the top-N (or 0 for all words)

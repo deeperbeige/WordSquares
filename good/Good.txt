@@ -1,3 +1,58 @@
+Dumbell
+
+3x2x3-L
+
+Layer z=0:
+LAY
+ATE
+
+Layer z=1:
+IRE
+DEN
+
+Layer z=2:
+ETA
+SAD
+
+Z-direction words (depth, for each (x, y)):
+z-word at (x=0, y=0): LIE
+z-word at (x=1, y=0): ART
+z-word at (x=2, y=0): YEA
+z-word at (x=0, y=1): ADS
+z-word at (x=1, y=1): TEA
+z-word at (x=2, y=1): END
+
+
+3x2x3-R
+
+Layer z=0:
+AGO
+LOW
+
+Layer z=1:
+NEW
+OLE
+
+Layer z=2:
+TEN
+ODE
+
+Z-direction words (depth, for each (x, y)):
+z-word at (x=0, y=0): ANT
+z-word at (x=1, y=0): GEE
+z-word at (x=2, y=0): OWN
+z-word at (x=0, y=1): LOO
+z-word at (x=1, y=1): OLD
+z-word at (x=2, y=1): WEE
+
+..RE.*.EL..
+preoperatively
+creaturely
+preemptively
+creatively
+
+
+
 3x3x3
 
 Layer z=0:
@@ -30,22 +85,148 @@ z-word at (x=2, y=2): TED
 
 4x3x2
 
+Layer z=0:
+PIKE
+USER
+TONE
+
+Layer z=1:
+ATOM
+GORE
+OPEN
+
+Z-direction words (depth, for each (x, y)):
+z-word at (x=0, y=0): PA
+z-word at (x=1, y=0): IT
+z-word at (x=2, y=0): KO
+z-word at (x=3, y=0): EM
+z-word at (x=0, y=1): UG
+z-word at (x=1, y=1): SO
+z-word at (x=2, y=1): ER
+z-word at (x=3, y=1): RE
+z-word at (x=0, y=2): TO
+z-word at (x=1, y=2): OP
+z-word at (x=2, y=2): NE
+z-word at (x=3, y=2): EN
+
 
 
 4x3x3
 
+Layer z=0:
+SPIT
+HATH
+ELSE
 
+Layer z=1:
+ROLE
+AREA
+GEAR
+
+Layer z=2:
+ISLE
+SEAM
+ODDS
+
+Z-direction words (depth, for each (x, y)):
+z-word at (x=0, y=0): SRI
+z-word at (x=1, y=0): POS
+z-word at (x=2, y=0): ILL
+z-word at (x=3, y=0): TEE
+z-word at (x=0, y=1): HAS
+z-word at (x=1, y=1): ARE
+z-word at (x=2, y=1): TEA
+z-word at (x=3, y=1): HAM
+z-word at (x=0, y=2): EGO
+z-word at (x=1, y=2): LED
+z-word at (x=2, y=2): SAD
+z-word at (x=3, y=2): ERS
+
+
+
+4x4x3
+NONE
 
 4x4x4
+NONE
 
 
 
 5x3x2
 
+Layer z=0:
+BOWED
+UNITE
+RENAL
 
+Layer z=1:
+AROSE
+RADAR
+EDEMA
+
+Z-direction words (depth, for each (x, y)):
+z-word at (x=0, y=0): BA
+z-word at (x=1, y=0): OR
+z-word at (x=2, y=0): WO
+z-word at (x=3, y=0): ES
+z-word at (x=4, y=0): DE
+z-word at (x=0, y=1): UR
+z-word at (x=1, y=1): NA
+z-word at (x=2, y=1): ID
+z-word at (x=3, y=1): TA
+z-word at (x=4, y=1): ER
+z-word at (x=0, y=2): RE
+z-word at (x=1, y=2): ED
+z-word at (x=2, y=2): NE
+z-word at (x=3, y=2): AM
+z-word at (x=4, y=2): LA
+
+
+
+5x2x2
+
+Layer z=0:
+LUMEN
+ANODE
+
+Layer z=1:
+OPERA
+WOMEN
+
+Z-direction words (depth, for each (x, y)):
+z-word at (x=0, y=0): LO
+z-word at (x=1, y=0): UP
+z-word at (x=2, y=0): ME
+z-word at (x=3, y=0): ER
+z-word at (x=4, y=0): NA
+z-word at (x=0, y=1): AW
+z-word at (x=1, y=1): NO
+z-word at (x=2, y=1): OM
+z-word at (x=3, y=1): DE
+z-word at (x=4, y=1): EN
+
+
+
+5x3x2
+NONE
 
 5x3x3
+NONE
 
+5x4x2
+NONE
 
+6x2x2
+NONE
 
+6x3x2
+NONE
 
+6x4x2
+NONE
+
+6x2x2
+NONE
+
+7x2x2
+NONE
